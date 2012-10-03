@@ -783,12 +783,9 @@ void HttpMethod::SendReq(FetchItem *Itm,CircleBuf &Out)
    Req += "Date: " + dateString + "\r\n";
 
    string extractedPassword;
-   if (Uri.Password.empty() && NULL == getenv("AWS_SECRET_ACCESS_KEY")) {
-     cerr << "E: No AWS_SECRET_ACCESS_KEY set" << endl;
-     exit(1);
-   } else if(Uri.Password.empty()) {
+   if(getenv("AWS_SECRET_ACCESS_KEY") != NULL) {
      extractedPassword = getenv("AWS_SECRET_ACCESS_KEY");
-   } else {
+   } else if(!Uri.Password.empty()) {
      if(Uri.Password.at(0) == '['){
        extractedPassword = Uri.Password.substr(1,Uri.Password.size()-2);
      }else{
@@ -800,20 +797,19 @@ void HttpMethod::SendReq(FetchItem *Itm,CircleBuf &Out)
    sprintf(headertext,"GET\n\n\n%s\n%s", dateString.c_str(), normalized_path.c_str());
    doEncrypt(headertext, signature, extractedPassword.c_str());
 
-   string signatureString(signature);
+  string signatureString(signature);
   string user;
-  if (Uri.User.empty() && NULL == getenv("AWS_ACCESS_KEY_ID")) {
-    cerr << "E: No AWS_ACCESS_KEY_ID set" << endl;
-    exit(1);
-  } else if (Uri.User.empty()) {
+  if (getenv("AWS_ACCESS_KEY_ID") != NULL) {
     user = getenv("AWS_ACCESS_KEY_ID");
-  } else {
+  } else if(!Uri.User.empty()) {
     user = Uri.User;
   }
 
   //cerr << "user " << user << "\n";
-	Req += "Authorization: AWS " + user + ":" + signatureString + "\r\n";
-   	Req += "User-Agent: Ubuntu APT-HTTP/1.3 ("VERSION")\r\n\r\n";
+  if(user.empty() || extractedPassword.empty())
+	  Req += "Authorization: AWS " + user + ":" + signatureString + "\r\n";
+  
+  Req += "User-Agent: Ubuntu APT-HTTP/1.3 ("VERSION")\r\n\r\n";
 
    if (Debug == true)
      cerr << "Request" << endl << Req << endl;
