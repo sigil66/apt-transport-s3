@@ -16,5 +16,5 @@ build/apt-transport-s3::
 
 install/apt-transport-s3::
 	@cp $(CURDIR)/src/s3+http $(DEB_DIR)/usr/lib/apt/methods/
-	@ln -sf s3 $(DEB_DIR)/usr/lib/apt/methods/s3+http
+	ln -sf ./s3+http $(DEB_DIR)/usr/lib/apt/methods/s3
 
