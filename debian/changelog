@@ -1,3 +1,9 @@
+apt-transport-s3 (1.1.2) wheezy; urgency=low
+
+ * Break out http handling
+
+-- Zachary Schneider <sigil.66@gmail.com>  Tues, 09 Oct 2012 21:00:00 -0500
+
 apt-transport-s3 (1.1.1ubuntu2) precise; urgency=low
 
   * Modified for company needs
