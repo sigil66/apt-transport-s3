@@ -809,7 +809,7 @@ void HttpMethod::SendReq(FetchItem *Itm,CircleBuf &Out)
   if(!user.empty() || !extractedPassword.empty())
 	  Req += "Authorization: AWS " + user + ":" + signatureString + "\r\n";
   
-  Req += "User-Agent: Ubuntu APT-HTTP/1.3 ("VERSION")\r\n\r\n";
+  Req += "User-Agent: Debian APT-HTTP/1.3 ("VERSION")\r\n\r\n";
 
    if (Debug == true)
      cerr << "Request" << endl << Req << endl;
