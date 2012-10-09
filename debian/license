@@ -1,0 +1,38 @@
+This is the apt-transport-s3 package, maintained by
+Jorge A Gallegos <kad@blegh.net>
+
+The original source can always be found at:
+    https://github.com/kyleshank/apt-s3
+
+The development place for apt-transport-s3 is at
+    https://github.com/thekad/apt-s3
+
+apt-transport-s3 is based on the http method from Apt.
+
+Apt is copyright 1997, 1998, 1999 Jason Gunthorpe and others.
+
+The original modification to the http transport to properly
+work with s3 is copyright 2008 Kyle Shank and 2009 Cliff Moon
+
+The debian work is copyright 2011 Jorge Gallegos
+
+The original http method from Apt are licened under the terms of the
+GNU General Public License (GPL), version 2.0 or later, as published
+by the Free Software Foundation:
+
+   This package is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This package is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this package; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+On Debian systems, the complete text of the GNU General Public License can
+be found in `/usr/share/common-licenses/GPL'. 

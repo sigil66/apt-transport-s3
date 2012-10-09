@@ -1,0 +1,31 @@
+apt-transport-s3 (1.1.1ubuntu2) precise; urgency=low
+
+  * Modified for company needs
+
+ -- Piotr Bulinski <piotr.bulinski@castlabs.com>  Fri, 27 Jun 2012 17:00:03 +0200
+
+apt-transport-s3 (1.1.1ubuntu1) precise; urgency=low
+
+  * Version bump for stvp; no change from braeuer.jens,
+    use his package instead.
+
+ -- Brian P O'Rourke <bpo@somnambulance.net>  Fri, 04 May 2012 16:56:03 -0700
+
+apt-transport-s3 (1.1ubuntu1) oneiric; urgency=low
+
+  * Make apt-transport-s3 work, when locale is non-english.
+
+ -- Jens Braeuer <braeuer.jens@googlemail.com>  Mon, 31 Jan 2012 21:01:25 +0100
+
+apt-transport-s3 (1.0ubuntu1) lucid; urgency=low
+
+  * Working around stupid amazon s3 behaviour with filenames
+    that include + signs
+
+ -- Jorge Gallegos <kad@blegh.net>  Wed, 18 May 2011 14:01:25 -0700
+
+apt-transport-s3 (1.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Jorge Gallegos <kad@blegh.net>  Fri, 29 Apr 2011 15:20:02 -0700
