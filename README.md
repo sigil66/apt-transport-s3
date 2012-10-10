@@ -26,7 +26,7 @@ Finally, this is how you add it to the /etc/apt/sources.list file if you want yo
     
 Https:
     
-    deb s3+https//s3-ENDPOINT.amazonaws.com/BUCKETNAME prod main
+    deb s3+https://s3-ENDPOINT.amazonaws.com/BUCKETNAME prod main
     
     (no auth support yet)
 
