@@ -108,8 +108,19 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
    string remotehost = Uri.Host;
    string parsed_uri = Uri;
    
+   //S3 Plus hack and s3 URI mod
+   
    parsed_uri.erase(0, 3);
-
+   
+   string normalized_uri = QuoteString(parsed_uri, "~");
+   size_t f_plus = normalized_uri.find("+");
+   size_t f_rep;
+   while (f_plus != string::npos){
+      f_rep = f_plus;
+      normalized_uri.replace(f_rep, 1, "%2b");
+      f_plus = normalized_uri.find("+", f_plus + 1);
+   }
+   
    // TODO:
    //       - http::Pipeline-Depth
    //       - error checking/reporting
@@ -121,7 +132,7 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
    maybe_add_auth (Uri, _config->FindFile("Dir::Etc::netrc"));
 
    // callbacks
-   curl_easy_setopt(curl, CURLOPT_URL, static_cast<string>(parsed_uri).c_str());
+   curl_easy_setopt(curl, CURLOPT_URL, static_cast<string>(normalized_uri).c_str());
    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
    curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
    curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_callback);
