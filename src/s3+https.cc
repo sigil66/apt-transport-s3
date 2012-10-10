@@ -108,7 +108,7 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
    string remotehost = Uri.Host;
    string parsed_uri = Uri;
    
-   prarsed_uri.erase(0, 3);
+   parsed_uri.erase(0, 3);
 
    // TODO:
    //       - http::Pipeline-Depth
