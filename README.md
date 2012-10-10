@@ -23,6 +23,12 @@ Once compiled, the resulting s3 binary must be placed in /usr/lib/apt/methods/ a
 Finally, this is how you add it to the /etc/apt/sources.list file if you want your credentials in the url:
 
     deb s3://AWS_ACCESS_ID:[AWS_SECRET_KEY_IN_BRACKETS]@s3-ENDPOINT.amazonaws.com/BUCKETNAME prod main
+    
+Https:
+    
+    deb s3+https//s3-ENDPOINT.amazonaws.com/BUCKETNAME prod main
+    
+    (no auth support yet)
 
 otherwise leave off the credentials and it will draw them from the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY_ID`.
 
