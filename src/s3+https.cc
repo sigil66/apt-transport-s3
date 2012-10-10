@@ -106,6 +106,9 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
    long curl_responsecode;
    URI Uri = Itm->Uri;
    string remotehost = Uri.Host;
+   string parsed_uri = Uri;
+   
+   prarsed_uri.erase(0, 3);
 
    // TODO:
    //       - http::Pipeline-Depth
@@ -118,7 +121,7 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
    maybe_add_auth (Uri, _config->FindFile("Dir::Etc::netrc"));
 
    // callbacks
-   curl_easy_setopt(curl, CURLOPT_URL, static_cast<string>(Uri.erase(0, 3)).c_str());
+   curl_easy_setopt(curl, CURLOPT_URL, static_cast<string>(Uri).c_str());
    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
    curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
    curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_callback);
