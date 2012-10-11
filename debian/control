@@ -1,8 +1,8 @@
 Source: apt-transport-s3
 Section: admin
 Priority: optional
-Maintainer: Jorge A Gallegos <kad@blegh.net>
-Homepage: https://github.com/kyleshank/apt-s3
+Maintainer: Zachary Schneider <zschneider@aptus.io>
+Homepage: https://github.com/sigil66/apt-s3
 Standards-Version: 3.7.3
 Build-Depends: debhelper (>= 5.0), libapt-pkg-dev (>= 0.7.23), cdbs, libcurl4-openssl-dev
 

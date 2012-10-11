@@ -1,7 +1,7 @@
 apt-transport-s3 (1.1.2) wheezy; urgency=low
  
- * Break out http handling
- * Add https handler
+  * Break out http handling
+  * Add https handler
 
  -- Zachary Schneider <sigil.66@gmail.com>  Tues, 09 Oct 2012 21:00:00 -0500
 
