@@ -1,0 +1,1 @@
+* Add Auth support for HTTPS
