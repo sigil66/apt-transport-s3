@@ -1,4 +1,4 @@
-# apt-s3
+# apt-transport-s3
 
 Additional "s3" protocol for apt so you can host your giant apt repository in s3 on the cheap!
 
