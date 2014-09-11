@@ -30,9 +30,17 @@
 #include <iostream>
 #include <sstream>
 
+#include <openssl/hmac.h>
+#include <openssl/evp.h>
+#include <openssl/bio.h>
+
 #include "config.h"
 #include "s3+https.h"
 #include <apti18n.h>
+
+#define SLEN 1024
+
+void doEncrypt(char * kString,char * str, const char * secretKey);
                   /*}}}*/
 using namespace std;
 
@@ -94,6 +102,42 @@ void HttpsMethod::SetupProxy()  					/*{{{*/
       curl_easy_setopt(curl, CURLOPT_PROXY, Proxy.Host.c_str());
    }
 }									/*}}}*/
+
+void doEncrypt(char *kString, char *sigString, const char* secretKey){
+   HMAC_CTX hctx;
+   BIO *bio, *b64;
+   char *sigptr;
+   long siglen = -1;
+   unsigned int rizlen;
+   char skey[SLEN];
+   unsigned char results[SLEN];
+
+   // Initialize SHA1 encryption
+   sprintf(skey, "%s", secretKey);
+   HMAC_CTX_init(&hctx);
+   HMAC_Init(&hctx, skey, (int)strlen((char *)skey), EVP_sha1());
+
+   // Encrypt
+   HMAC(EVP_sha1(), skey, (int)strlen((char *)skey), (unsigned char *)kString,
+         (int)strlen((char *)kString), results, &rizlen);
+
+   // Base 64 Encode
+   b64 = BIO_new(BIO_f_base64());
+   bio = BIO_new(BIO_s_mem());
+   BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
+   bio = BIO_push(b64, bio);
+   BIO_write(bio, results, rizlen);
+   BIO_flush(bio);
+
+   siglen = BIO_get_mem_data(bio, &sigptr);
+   memcpy(sigString, sigptr, siglen);
+   sigString[siglen] = '\0';
+
+   // Clean up Encryption, Encoding
+   BIO_free_all(bio);
+   HMAC_CTX_cleanup(&hctx);
+}
+
 // HttpsMethod::Fetch - Fetch an item					/*{{{*/
 // ---------------------------------------------------------------------
 /* This adds an item to the pipeline. We keep the pipeline at a fixed
@@ -108,7 +152,7 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
    string remotehost = Uri.Host;
    string parsed_uri = Uri;
    
-   //S3 Plus hack and s3 URI mod
+   // S3 Plus hack and s3 URI mod
    
    parsed_uri.erase(0, 3);
    
@@ -120,7 +164,17 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
       normalized_uri.replace(f_rep, 1, "%2b");
       f_plus = normalized_uri.find("+", f_plus + 1);
    }
-   
+
+   // Same with path
+   string normalized_path = QuoteString(Uri.Path, "~");
+   size_t fp_plus = normalized_path.find("+");
+   size_t fp_rep;
+   while (fp_plus != string::npos){
+      fp_rep = fp_plus;
+      normalized_path.replace(fp_rep, 1, "%2b");
+      fp_plus = normalized_path.find("+", f_plus + 1);
+   }
+
    // TODO:
    //       - http::Pipeline-Depth
    //       - error checking/reporting
@@ -140,6 +194,7 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, false);
    curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
    curl_easy_setopt(curl, CURLOPT_FILETIME, true);
+   // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
    // SSL parameters are set by default to the common (non mirror-specific) value
    // if available (or a default one) and gets overload by mirror-specific ones.
@@ -283,6 +338,60 @@ bool HttpsMethod::Fetch(FetchItem *Itm)
       curl_easy_setopt(curl, CURLOPT_TIMECONDITION, CURL_TIMECOND_IFMODSINCE);
       curl_easy_setopt(curl, CURLOPT_TIMEVALUE, Itm->LastModified);
    }
+   
+   // S3 fun
+   time_t rawtime = 0;
+   struct tm * timeinfo = NULL;
+   char buffer [80] = { 0 };
+   char* wday = NULL;
+
+   time( &rawtime);
+   timeinfo = gmtime( &rawtime);
+
+   // strftime does not seem to honour set_locale(LC_ALL, "") or
+   // set_locale(LC_TIME, ""). So convert day of week by hand.
+   switch (timeinfo->tm_wday) {
+   case 0: wday = (char*)"Sun"; break;
+   case 1: wday = (char*)"Mon"; break;
+   case 2: wday = (char*)"Tue"; break;
+   case 3: wday = (char*)"Wed"; break;
+   case 4: wday = (char*)"Thu"; break;
+   case 5: wday = (char*)"Fri"; break;
+   case 6: wday = (char*)"Sat"; break;
+   }
+
+   strcat(buffer, wday);
+   strftime(buffer+3, 80, ", %d %b %Y %T %z", timeinfo);
+   string dateString((const char*)buffer);
+   
+   headers = curl_slist_append(headers, ("Date: " + dateString).c_str());
+
+   string extractedPassword;
+   if(getenv("AWS_SECRET_ACCESS_KEY") != NULL) {
+     extractedPassword = getenv("AWS_SECRET_ACCESS_KEY");
+   } else if(!Uri.Password.empty()) {
+     if(Uri.Password.at(0) == '['){
+       extractedPassword = Uri.Password.substr(1,Uri.Password.size()-2);
+     }else{
+       extractedPassword = Uri.Password;
+     }
+   }
+
+   char headertext[SLEN], signature[SLEN];
+   sprintf(headertext,"GET\n\n\n%s\n%s", dateString.c_str(), normalized_path.c_str());
+   doEncrypt(headertext, signature, extractedPassword.c_str());
+
+   string signatureString(signature);
+   string user;
+   if (getenv("AWS_ACCESS_KEY_ID") != NULL) {
+     user = getenv("AWS_ACCESS_KEY_ID");
+   } else if(!Uri.User.empty()) {
+     user = Uri.User;
+   }
+
+   if(!user.empty() || !extractedPassword.empty())
+     headers = curl_slist_append(headers, ("Authorization: AWS " + user + ":" + signatureString).c_str());
+   // end S3 fun
 
    // go for it - if the file exists, append on it
    File = new FileFd(Itm->DestFile, FileFd::WriteAny);

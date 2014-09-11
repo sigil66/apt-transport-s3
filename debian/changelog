@@ -1,4 +1,11 @@
-apt-transport-s3 (1.1.2) wheezy; urgency=low
+apt-transport-s3 (1.1.3) precise; urgency=low
+  
+  * Change repository name
+  * Add auth support to https method
+  
+ -- Zachary Schneider <sigil.66@gmail.com>  Tues, 09 Sept 2014 15:43:00 -0500
+
+apt-transport-s3 (1.1.2) precise; urgency=low
  
   * Break out http handling
   * Add https handler

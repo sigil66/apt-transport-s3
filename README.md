@@ -4,6 +4,7 @@ Additional "s3" protocol for apt so you can host your giant apt repository in s3
 
 We use this for pressflip.com to deploy and distribute all of our software.  apt is a great packaging system and s3 is a great place to backup/store static files.  apt-s3 is especially useful and fast if you are hosting your servers within EC2.
 
+Current Author: Zachary Schneider @sigil66
 Original Author: Kyle Shank
 Contributors: Cliff Moon (@cliffmoon on GH), Jens Braeuer (@jbraeuer)
 Documenter: Susan Potter (@mbbx6spp on GH)
@@ -26,9 +27,8 @@ Finally, this is how you add it to the /etc/apt/sources.list file if you want yo
     
 Https:
     
-    deb s3+https://s3-ENDPOINT.amazonaws.com/BUCKETNAME prod main
+    deb s3+https://AWS_ACCESS_ID:[AWS_SECRET_KEY_IN_BRACKETS]@s3-ENDPOINT.amazonaws.com/BUCKETNAME prod main
     
-    (no auth support yet)
 
 otherwise leave off the credentials and it will draw them from the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY_ID`.
 
