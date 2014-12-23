@@ -18,7 +18,7 @@ Before building this project on Ubuntu (tested on 12.04) you will need to instal
 
     [sudo] apt-get install libapt-pkg-dev libcurl4-openssl-dev
 
-To build this project you simply run `make`. It will produce a binary named `s3` under the `src/` dir.
+To build this project you simply run `make deb`. It will produce a package for you.
 
 ## Installing
 
