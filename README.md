@@ -33,7 +33,7 @@ Https:
     deb s3+https://AWS_ACCESS_ID:[AWS_SECRET_KEY_IN_BRACKETS]@s3-ENDPOINT.amazonaws.com/BUCKETNAME prod main
     
 
-otherwise leave off the credentials and it will draw them from the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY_ID`.
+otherwise leave off the credentials and it will draw them from the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 
 Simply upload all of your .deb packages and Packages.gz file into the s3 bucket you chose with the file key mapping that matches the file system layout.
 
