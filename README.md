@@ -16,7 +16,7 @@ Documenter: Susan Potter (@mbbx6spp on GH)
 
 Before building this project on Ubuntu (tested on 12.04) you will need to install the following packages:
 
-    [sudo] apt-get install libapt-pkg-dev libcurl4-openssl-dev
+    [sudo] apt-get install libapt-pkg-dev libcurl4-openssl-dev cdbs
 
 To build this project you simply run `make deb`. It will produce a package for you.
 
