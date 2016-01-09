@@ -16,7 +16,7 @@ Documenter: Susan Potter (@mbbx6spp on GH)
 
 Before building this project on Ubuntu (tested on 12.04) you will need to install the following packages:
 
-    [sudo] apt-get install libapt-pkg-dev libcurl4-openssl-dev
+    [sudo] apt-get install libapt-pkg-dev libcurl4-openssl-dev cdbs
 
 To build this project you simply run `make deb`. It will produce a package for you.
 
@@ -33,7 +33,7 @@ Https:
     deb s3+https://AWS_ACCESS_ID:[AWS_SECRET_KEY_IN_BRACKETS]@s3-ENDPOINT.amazonaws.com/BUCKETNAME prod main
     
 
-otherwise leave off the credentials and it will draw them from the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_KEY_ID`.
+otherwise leave off the credentials and it will draw them from the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 
 Simply upload all of your .deb packages and Packages.gz file into the s3 bucket you chose with the file key mapping that matches the file system layout.
 
